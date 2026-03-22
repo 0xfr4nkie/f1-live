@@ -259,15 +259,20 @@ name = "f1-live"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "black" },
     { name = "fastf1" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "black" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "black", specifier = ">=26.3.1" },
+    { name = "black", marker = "extra == 'dev'", specifier = ">=26.3.1" },
     { name = "fastf1", specifier = ">=3.8.1" },
 ]
+provides-extras = ["dev"]
 
 [[package]]
 name = "fastf1"
