@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 import util
 
@@ -7,6 +7,7 @@ app = FastAPI()
 
 origins = ["http://localhost:5173"]
 
+# noinspection PyTypeChecker
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
