@@ -2,17 +2,17 @@
 @year = 2025
 @name = Chinese Grand Prix
 
-###
+### /schedule
 // @no-log
 GET http://localhost:8000/schedule
 Accept: application/json
 
-###
+### /schedule/{{year}}
 // @no-log
 GET http://localhost:8000/schedule/{{year}}
 Accept: application/json
 
-###
+### /event/{{year}}/{{name}}
 // @no-log
 GET http://localhost:8000/event/{{year}}/{{name}}
 Accept: application/json
