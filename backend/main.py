@@ -49,3 +49,9 @@ async def get_race_schedule(year: int):
     event_dates = schedule["EventDate"]
     event_names = schedule["EventName"]
     return {"event_dates": event_dates, "event_names": event_names}
+
+
+@app.get("/event/{year}/{name}")
+async def get_event_by_year_and_name(year: int, name: str):
+    event = util.get_event(year, name)
+    return event.to_dict()
