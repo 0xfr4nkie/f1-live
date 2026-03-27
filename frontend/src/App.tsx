@@ -1,70 +1,84 @@
 import "./App.css"
-import {useEffect, useState} from "react"
-
-type EventItem = {
-  name: string
-  date: Date
-}
+import React, {useEffect, useState} from "react"
 
 function App() {
-  const [events, setEvents] = useState<EventItem[]>([])
-  const [error, setError] = useState<string | null>(null)
+  const [events, setEvents] = useState<string[]>([])
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear())
+  const [selectedEvent, setSelectedEvent] = useState<string>()
+
+
+  const handleYearChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedYear(Number(event.target.value))
+  }
+
+  const handleEventChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedEvent(String(event.target.value))
+  }
 
   useEffect(() => {
-    const controller = new AbortController()
-
-    const loadSchedule = async () => {
+    const loadEvents = async () => {
       try {
-        const response = await fetch("http://localhost:8000/schedule/2025", {
-          signal: controller.signal,
-        })
+        const response = await fetch(`http://localhost:8000/schedule/${selectedYear}`, {})
 
         if (!response.ok) {
           console.log(`Request failed: ${response.status}`)
         }
 
-        const data: {
-          event_names: Record<string, string>
-          event_dates: Record<string, string>
-        } = await response.json()
+        const data = await response.json()
+        setEvents(data.event_names)
 
-        const entries = Object.keys(data.event_names)
-          .sort((a, b) => Number(a) - Number(b))
-          .map((key) => ({
-            name: data.event_names[key],
-            date: new Date(data.event_dates[key]),
-          }))
-
-        setEvents(entries)
-        setError(null)
       } catch (err) {
         if (err instanceof DOMException && err.name === "AbortError") {
           return
         }
 
-        setError(err instanceof Error ? err.message : "Failed to load schedule")
       }
     }
 
-    void loadSchedule()
+    void loadEvents()
+  }, [selectedYear])
 
-    return () => {
-      controller.abort()
+  useEffect(() => {
+    const loadEvent = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/event/${selectedYear}/${selectedEvent}`, {})
+
+        if (!response.ok) {
+          console.log(`Request failed: ${response.status}`)
+        }
+
+        const data = await response.json()
+        console.log(data)
+      } catch (e) {
+        if (e instanceof DOMException && e.name === "AbortError") {
+          return
+        }
+      }
     }
-  }, [])
 
-  if (error) {
-    return <p role="alert">Error: {error}</p>
-  }
+    void loadEvent()
+  }, [selectedEvent, selectedYear]);
 
   return (
-    <ul>
-      {events.map((event) => (
-        <li key={`${event.name}-${event.date.toISOString()}`}>
-          {event.name} — {event.date.toLocaleDateString()}
-        </li>
-      ))}
-    </ul>
+    <>
+      <div>
+        <label htmlFor="year-selector">Select Year: </label>
+        <select id="year-selector" value={selectedYear} onChange={handleYearChange}>
+          <option value={2024}>2024</option>
+          <option value={2025}>2025</option>
+          <option value={2026}>2026</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Select Event: </label>
+        <select id={"event-selector"} value={selectedEvent} onChange={handleEventChange}>
+          {events.map((event, index) => (
+            <option key={index} value={event}>{event}</option>
+          ))}
+        </select>
+      </div>
+    </>
   )
 }
 
