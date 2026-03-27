@@ -51,5 +51,15 @@ async def get_race_schedule(year: int):
 
 @app.get("/event/{year}/{name}")
 async def get_event_by_year_and_name(year: int, name: str):
+    """
+    Get detailed information about a specific event by year and name.
+
+    Args:
+        year: The year of the event.
+        name: The name of the event.
+
+    Returns:
+        A dictionary containing detailed information about the requested event.
+    """
     event = util.get_event(year, name)
     return event.to_dict()
