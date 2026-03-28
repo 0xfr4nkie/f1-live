@@ -1,5 +1,6 @@
 import "./App.css"
 import React, {useEffect, useState} from "react"
+import {Dropdown} from "./components/Dropdown.tsx";
 
 function App() {
   const [events, setEvents] = useState<string[]>([])
@@ -7,7 +8,7 @@ function App() {
   const [selectedEvent, setSelectedEvent] = useState<string>()
 
 
-  const handleYearChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedYear(Number(event.target.value))
   }
 
@@ -48,7 +49,7 @@ function App() {
         }
 
         const data = await response.json()
-        console.log(data)
+        console.log(data) //TODO: Remove
       } catch (e) {
         if (e instanceof DOMException && e.name === "AbortError") {
           return
@@ -61,23 +62,8 @@ function App() {
 
   return (
     <>
-      <div>
-        <label htmlFor="year-selector">Select Year: </label>
-        <select id="year-selector" value={selectedYear} onChange={handleYearChange}>
-          <option value={2024}>2024</option>
-          <option value={2025}>2025</option>
-          <option value={2026}>2026</option>
-        </select>
-      </div>
-
-      <div>
-        <label>Select Event: </label>
-        <select id={"event-selector"} value={selectedEvent} onChange={handleEventChange}>
-          {events.map((event, index) => (
-            <option key={index} value={event}>{event}</option>
-          ))}
-        </select>
-      </div>
+      <Dropdown value={selectedYear} onChange={handleYearChange} options={[2024, 2025, 2026]}/>
+      <Dropdown value={selectedEvent} onChange={handleEventChange} options={events}/>
     </>
   )
 }
