@@ -4,17 +4,22 @@ import {Dropdown} from "./components/Dropdown.tsx";
 
 function App() {
   const years = Array.from({length: new Date().getFullYear() - 2010 + 1}, (_, i) => 2010 + i)
-  const [events, setEvents] = useState<string[]>([])
+  const [schedule, setSchedule] = useState<string[]>([])
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear())
+  const [selectedRoundNumber, setSelectedRoundNumber] = useState<number>(1)
   const [selectedEvent, setSelectedEvent] = useState<string>()
 
 
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedYear(Number(event.target.value))
+    setSelectedEvent(undefined)
+    setSelectedRoundNumber(1)
   }
 
   const handleEventChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedEvent(String(event.target.value))
+    const eventName = event.target.value
+    setSelectedEvent(eventName)
+    setSelectedRoundNumber(schedule.indexOf(eventName) + 1)
   }
 
   useEffect(() => {
@@ -27,7 +32,8 @@ function App() {
         }
 
         const data = await response.json()
-        setEvents(data.event_names)
+        setSchedule(data.event_names)
+        setSelectedEvent(data.event_names[0])
 
       } catch (err) {
         console.error(`Error fetching events: ${err}`)
@@ -38,9 +44,11 @@ function App() {
   }, [selectedYear])
 
   useEffect(() => {
+    if (!selectedEvent) return
+
     const loadEvent = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/event/${selectedYear}/${selectedEvent}`, {})
+        const response = await fetch(`http://localhost:8000/event/${selectedYear}/${selectedRoundNumber}`, {})
 
         if (!response.ok) {
           console.error(`Request failed: ${response.status}`)
@@ -54,12 +62,12 @@ function App() {
     }
 
     void loadEvent()
-  }, [selectedEvent, selectedYear]);
+  }, [selectedEvent, selectedYear, selectedRoundNumber]);
 
   return (
     <>
       <Dropdown label={"Select Year"} value={selectedYear} onChange={handleYearChange} options={years}/>
-      <Dropdown label={"Select Event"} value={selectedEvent} onChange={handleEventChange} options={events}/>
+      <Dropdown label={"Select Grand Prix"} value={selectedEvent} onChange={handleEventChange} options={schedule}/>
     </>
   )
 }

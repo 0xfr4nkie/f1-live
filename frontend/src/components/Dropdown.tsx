@@ -11,7 +11,7 @@ export function Dropdown(props: {
   return (
     <div>
       <p>{props.label}: </p>
-      <select id={selectorId} value={props.value} onChange={props.onChange}>
+      <select id={selectorId} value={props.value ?? `Select a ${lastWord}`} onChange={props.onChange}>
         {props.options.map((option, index) => (
           <option key={index} value={option}>
             {option}
