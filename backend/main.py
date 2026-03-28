@@ -27,13 +27,13 @@ async def get_race_schedule_of_current_year():
     Returns:
         A dictionary containing event_names for all races in the current year.
     """
-    schedule = util.get_race_schedule(datetime.now().year).to_dict()
+    schedule = util.get_gp_schedule(datetime.now().year).to_dict()
     event_names = schedule["EventName"]
     return {"event_names": event_names}
 
 
 @app.get("/schedule/{year}")
-async def get_race_schedule(year: int):
+async def get_gp_schedule(year: int):
     """
     Get the race schedule for a specific year.
 
@@ -44,7 +44,7 @@ async def get_race_schedule(year: int):
         A dictionary containing event_names for all races in the specified year.
     """
 
-    schedule = util.get_race_schedule(year)
+    schedule = util.get_gp_schedule(year)
     event_names = schedule["EventName"].tolist()
     return {"event_names": event_names}
 
