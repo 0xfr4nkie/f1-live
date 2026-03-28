@@ -23,17 +23,14 @@ function App() {
         const response = await fetch(`http://localhost:8000/schedule/${selectedYear}`, {})
 
         if (!response.ok) {
-          console.log(`Request failed: ${response.status}`)
+          console.error(`Request failed: ${response.status}`)
         }
 
         const data = await response.json()
         setEvents(data.event_names)
 
       } catch (err) {
-        if (err instanceof DOMException && err.name === "AbortError") {
-          return
-        }
-
+        console.error(`Error fetching events: ${err}`)
       }
     }
 
@@ -46,20 +43,18 @@ function App() {
         const response = await fetch(`http://localhost:8000/event/${selectedYear}/${selectedEvent}`, {})
 
         if (!response.ok) {
-          console.log(`Request failed: ${response.status}`)
+          console.error(`Request failed: ${response.status}`)
         }
 
         const data = await response.json()
         console.log(data) //TODO: Remove
-      } catch (e) {
-        if (e instanceof DOMException && e.name === "AbortError") {
-          return
-        }
+      } catch (err) {
+        console.error(`Error fetching event: ${err}`)
       }
     }
 
     void loadEvent()
-  }, [selectedEvent]);
+  }, [selectedEvent, selectedYear]);
 
   return (
     <>
