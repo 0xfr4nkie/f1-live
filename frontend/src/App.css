@@ -32,7 +32,7 @@
   margin-top: 0;
   color: var(--accent);
   font-size: 1.8rem;
-  font-family: var(--heading);
+    font-family: var(--heading), sans-serif;
   text-transform: uppercase;
 }
 
@@ -48,7 +48,7 @@
   font-size: 1.4rem;
   margin-bottom: 1rem;
   color: var(--text-h);
-  font-family: var(--heading);
+    font-family: var(--heading), sans-serif;
 }
 
 .session-item {
@@ -79,7 +79,7 @@
 
 .dropdown-label {
   font-weight: bold;
-  font-family: var(--heading);
+    font-family: var(--heading), sans-serif;
   color: var(--text-h);
   text-align: left;
 }
@@ -90,7 +90,7 @@
   border: 1px solid var(--border);
   background-color: var(--bg);
   color: var(--text);
-  font-family: var(--sans);
+    font-family: var(--sans), sans-serif;
   font-size: 1rem;
   cursor: pointer;
 }
