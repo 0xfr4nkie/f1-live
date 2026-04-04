@@ -9,9 +9,14 @@ export function Dropdown(props: {
   const lastWord = props.label.toLowerCase().split(" ").pop() ?? ""
   const selectorId = `${lastWord}-selector`
   return (
-    <div>
-      <p>{props.label}: </p>
-      <select id={selectorId} value={props.value ?? `Select a ${lastWord}`} onChange={props.onChange}>
+    <div className="dropdown-container">
+      <label htmlFor={selectorId} className="dropdown-label">{props.label}: </label>
+      <select 
+        id={selectorId} 
+        className="dropdown-select"
+        value={props.value ?? `Select a ${lastWord}`} 
+        onChange={props.onChange}
+      >
         {props.options.map((option, index) => (
           <option key={index} value={option}>
             {option}

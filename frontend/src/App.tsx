@@ -1,24 +1,27 @@
 import "./App.css"
 import React, {useEffect, useState} from "react"
 import {Dropdown} from "./components/Dropdown.tsx";
+import {RaceDetails, type EventDetails} from "./components/RaceDetails.tsx";
 
 function App() {
   const years = Array.from({length: new Date().getFullYear() - 2010 + 1}, (_, i) => 2010 + i)
   const [schedule, setSchedule] = useState<string[]>([])
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear())
   const [selectedRoundNumber, setSelectedRoundNumber] = useState<number>(1)
-  const [selectedEvent, setSelectedEvent] = useState<string>()
+  const [selectedEventName, setSelectedEventName] = useState<string>()
+  const [eventDetails, setEventDetails] = useState<EventDetails | null>(null)
 
 
   const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedYear(Number(event.target.value))
-    setSelectedEvent(undefined)
+    setSelectedEventName(undefined)
     setSelectedRoundNumber(1)
+    setEventDetails(null)
   }
 
   const handleEventChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const eventName = event.target.value
-    setSelectedEvent(eventName)
+    setSelectedEventName(eventName)
     setSelectedRoundNumber(schedule.indexOf(eventName) + 1)
   }
 
@@ -33,7 +36,7 @@ function App() {
 
         const data = await response.json()
         setSchedule(data.event_names)
-        setSelectedEvent(data.event_names[0])
+        setSelectedEventName(data.event_names[0])
 
       } catch (err) {
         console.error(`Error fetching events: ${err}`)
@@ -44,7 +47,7 @@ function App() {
   }, [selectedYear])
 
   useEffect(() => {
-    if (!selectedEvent) return
+    if (!selectedEventName) return
 
     const loadEvent = async () => {
       try {
@@ -55,20 +58,26 @@ function App() {
         }
 
         const data = await response.json()
-        console.log(data) //TODO: Remove
+        setEventDetails(data)
       } catch (err) {
         console.error(`Error fetching event: ${err}`)
       }
     }
 
     void loadEvent()
-  }, [selectedEvent, selectedYear, selectedRoundNumber]);
+  }, [selectedEventName, selectedYear, selectedRoundNumber]);
 
   return (
-    <>
-      <Dropdown label={"Select Year"} value={selectedYear} onChange={handleYearChange} options={years}/>
-      <Dropdown label={"Select Grand Prix"} value={selectedEvent} onChange={handleEventChange} options={schedule}/>
-    </>
+    <div className="app-container">
+      <header>
+        <h1 style={{color: 'var(--accent)', textTransform: 'uppercase'}}>F1 Live Schedule</h1>
+      </header>
+      <div className="selectors">
+        <Dropdown label={"Select Year"} value={selectedYear} onChange={handleYearChange} options={years}/>
+        <Dropdown label={"Select Grand Prix"} value={selectedEventName} onChange={handleEventChange} options={schedule}/>
+      </div>
+      {eventDetails && <RaceDetails event={eventDetails} />}
+    </div>
   )
 }
 
