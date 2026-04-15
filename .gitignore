@@ -32,3 +32,6 @@ env/
 
 # uv
 .python-version
+
+# macos
+.DS_Store
