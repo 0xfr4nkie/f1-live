@@ -8,13 +8,12 @@ import util
 
 app = FastAPI()
 
-origins = ["http://localhost:5173", "https://f1-live-lemon.vercel.app/"]
+origins = ["*"]
 
 # noinspection PyTypeChecker
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

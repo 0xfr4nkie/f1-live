@@ -4,6 +4,8 @@ import { Dropdown } from "./components/Dropdown.tsx"
 import { RaceDetails, type EventDetails } from "./components/RaceDetails.tsx"
 import { SessionStandings, type DriverResult } from "./components/SessionStandings.tsx"
 
+const API_BASE = `http://${window.location.hostname}:8000`
+
 function App() {
   const years = Array.from({ length: new Date().getFullYear() - 2010 + 1 }, (_, i) => 2010 + i)
   const [schedule, setSchedule] = useState<string[]>([])
@@ -53,7 +55,7 @@ function App() {
     try {
       const encodedSession = encodeURIComponent(sessionName)
       const response = await fetch(
-        `http://localhost:8000/session/${selectedYear}/${selectedRoundNumber}/${encodedSession}`
+        `${API_BASE}/session/${selectedYear}/${selectedRoundNumber}/${encodedSession}`
       )
 
       if (!response.ok) {
@@ -80,7 +82,7 @@ function App() {
   useEffect(() => {
     const loadEvents = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/schedule/${selectedYear}`, {})
+        const response = await fetch(`${API_BASE}/schedule/${selectedYear}`, {})
 
         if (!response.ok) {
           console.error(`Request failed: ${response.status}`)
@@ -103,7 +105,7 @@ function App() {
     const loadEvent = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/event/${selectedYear}/${selectedRoundNumber}`,
+          `${API_BASE}/event/${selectedYear}/${selectedRoundNumber}`,
           {}
         )
 
