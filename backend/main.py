@@ -1,6 +1,7 @@
 from datetime import datetime
+from urllib.parse import unquote
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 import util
@@ -63,3 +64,24 @@ async def get_event_by_year_and_name(year: int, round_number: int):
     """
     event = util.get_event_by_round_number(year, round_number)
     return event.to_dict()
+
+
+@app.get("/session/{year}/{round_number}/{session_name:path}")
+async def get_session_results(year: int, round_number: int, session_name: str):
+    """
+    Get results/standings for a specific session of a Grand Prix.
+
+    Args:
+        year: The year of the event.
+        round_number: The round number of the event.
+        session_name: The session name (e.g. 'Race', 'Qualifying', 'Practice 1').
+
+    Returns:
+        A list of driver result records for the session.
+    """
+    decoded_session = unquote(session_name)
+    try:
+        results = util.get_session_results(year, round_number, decoded_session)
+        return {"session": decoded_session, "results": results}
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=f"Session data not available: {str(e)}")
